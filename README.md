@@ -29,6 +29,7 @@ Runs on **Debian/Linux, Windows, and macOS**.
 | **Fullscreen** | Hides the status/navigation bars (immersive, edge‑to‑edge). |
 | **Screensaver** | After the app's idle timeout (default 60 s, set from the controller) the screen goes black at minimum brightness, like the Viewpoint's screen-off; a tap or a ring wakes it. Toggle it on/off from a **"Screensaver" switch added to Settings → Display & Brightness**. `--sleep never` omits it entirely. See [Sleep](#sleep). |
 | **Full-screen layout** | Removes the 9:16 letterbox the app applies for the Viewpoint's screen, so the UI and the call view fill taller phone screens. |
+| **Remove from UniFi** | The Viewpoint factory-resets itself when it's removed in UniFi Access; a normal app can't, so it stayed adopted. Now the app wipes its own data and restarts unadopted. If the device was removed while the app wasn't running (UniFi then asks you to hold the reset button), clear the app's storage instead: *Settings → Apps → Intercom Viewer → Storage → Clear data*, or `adb shell pm clear com.ui.da.viewer.app`. |
 | **Backdrop** | Solid black by default (AMOLED-friendly), a dark gradient (`--gradient`), or none (`--no-gradient`). With `--letterbox` it fills the bands around the 9:16 block. |
 
 All injected code is ordinary Android framework code written for this project.

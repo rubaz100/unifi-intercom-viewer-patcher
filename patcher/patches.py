@@ -382,3 +382,35 @@ def _inject_screensaver_toggle(decoded: str) -> None:
               f"Lcom/uvp/SsSwitch;->Row(Landroidx/compose/runtime/k;)V")
     at = m.end()
     _write(disp, text[:at] + inject + text[at:])
+
+
+# --- 5. Remove from UniFi: factory reset -> app reset ----------------------
+
+RESET_SMALI = os.path.join(os.path.dirname(os.path.abspath(__file__)), "smali", "Reset.smali")
+
+
+def patch_reset(decoded: str) -> None:
+    """Removing the device in UniFi Access sends a factory-reset RPC; the
+    Viewpoint broadcasts FACTORY_RESET to the system MasterClearReceiver, which
+    is silently dropped for a normal app, so it stays adopted. Inject
+    com.uvp.Reset (patcher/java/com/uvp/Reset.java) instead: mark the reset and
+    restart; the next start wipes the app's own data before anything opens it
+    (wiping in the dying process races with it writing its preferences back)."""
+    app = os.path.join("com", "ui", "da", "viewer", "app")
+    mqtt = _find_smali(decoded, os.path.join(app, "cmpts", "mqtt", "LocalMqttService.smali"))
+    text, n = re.subn(
+        r"(invoke-static \{\}, Lce/h;->a\(\)Landroid/content/Intent;.{0,200}?)"
+        r"invoke-virtual \{(\w+), \w+\}, Landroid/content/Context;->sendBroadcast\(Landroid/content/Intent;\)V",
+        r"\1invoke-static {\2}, Lcom/uvp/Reset;->run(Landroid/content/Context;)V",
+        _read(mqtt), count=1, flags=re.S)
+    if n != 1:
+        raise PatchError("anchor not found: LocalMqttService factory-reset broadcast")
+    _write(mqtt, text)
+
+    smali_root = sorted(glob.glob(os.path.join(decoded, "smali*")))[-1]
+    dest = os.path.join(smali_root, "com", "uvp", "Reset.smali")
+    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    _write(dest, _read(RESET_SMALI))
+    _inject_method_start(_find_smali(decoded, os.path.join(app, "App.smali")), "onCreate()V",
+                         "    invoke-static {p0}, Lcom/uvp/Reset;->onStart(Landroid/content/Context;)V\n",
+                         "App.onCreate")

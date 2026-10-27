@@ -145,6 +145,8 @@ def main() -> int:
                 log(f"  + adoption identity (MAC {mac}, fw {fw_version})")
             else:
                 log(f"  + adoption identity (MAC {mac}; firmware id/version not in build.prop)")
+            patches.patch_reset(decoded)
+            log("  + removing the device in UniFi resets the app (factory reset)")
 
         if not args.no_optimize:
             patches.patch_screen(decoded)
