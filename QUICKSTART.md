@@ -11,7 +11,7 @@ normal Android phone — in about 5 minutes. Works on **Debian/Linux**,
 
 ## 1. Install the prerequisites
 
-You need: **Python 3.9+**, a **JDK (17+)**, **apktool**, Android **build-tools**
+You need: **Python 3.11+**, a **JDK (17+)**, **apktool**, Android **build-tools**
 (`apksigner` + `zipalign`), and **adb** to push the APK to a phone.
 
 ### Debian / Ubuntu / Linux
@@ -21,6 +21,9 @@ sudo apt update
 sudo apt install -y python3 python3-pip python3-venv default-jdk apktool apksigner zipalign adb
 ```
 
+> `python3` must be 3.11 or newer (Debian 12+, Ubuntu 23.04+); check with
+> `python3 --version`.
+>
 > Older Debian/Ubuntu without an `apktool` package: download `apktool.jar` from
 > <https://apktool.org/>, then `export APKTOOL_JAR=/path/to/apktool.jar`.
 > No `apksigner`/`zipalign` packages? Install the Android command-line tools and

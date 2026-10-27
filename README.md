@@ -37,7 +37,7 @@ baked into the tool.
 
 ## Requirements
 
-- **Python 3.9+** and `pip install -r requirements.txt` (one dep: a pure‑Python ext4 reader)
+- **Python 3.11+** and `pip install -r requirements.txt` (one dep: a pure‑Python ext4 reader)
 - An **arm64 (`arm64-v8a`) device on Android 9+** to install the result, plus **adb**
 - A **JDK**, **apktool**, and Android **build‑tools** (`apksigner` + `zipalign`) —
   **or just run `python3 bootstrap.py`**, which downloads all three into a local
